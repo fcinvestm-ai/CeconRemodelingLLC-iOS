@@ -47,7 +47,7 @@ struct ContentView: View {
     }
 
     private var dashboard: some View {
-        NavigationStack {
+        NavigationView {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(appModules) { item in
@@ -79,7 +79,7 @@ struct ContentView: View {
     }
 
     private var drawerMenu: some View {
-        NavigationStack { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label(item.title, systemImage: item.symbol) } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { showMenu = false } } } }
+        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label(item.title, systemImage: item.symbol) } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { showMenu = false } } } }
     }
 
     private func module(_ id: String) -> MobileModule { appModules.first(where: { $0.id == id }) ?? appModules.first ?? MobileModule(id: "index", title: "Home", symbol: "house.fill") }
