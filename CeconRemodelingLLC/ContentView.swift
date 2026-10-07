@@ -4,16 +4,16 @@ import WebKit
 struct MobileModule: Identifiable, Hashable { let id: String; let title: String; let symbol: String }
 
 private let appName = "Cecon Remodeling LLC"
-private let baseURL = "https://ministry-client-sites.web.app/p/qX34yVpHomVie5UXg88l/"
+private let baseURL = "https://ceconremodelingllc.com"
 private let templateName = "floating-dock"
 private let navigationStyle = "floating"
 private let homeModule = "store"
 private let themeHex = "#234da9"
 private let appModules: [MobileModule] = [
         MobileModule(id: "store", title: "Store", symbol: "bag.fill"),
-        MobileModule(id: "project-estimator", title: "Project Estimator", symbol: "sum"),
         MobileModule(id: "room-designer", title: "Room Designer", symbol: "square.3.layers.3d"),
-        MobileModule(id: "chat", title: "Chat", symbol: "message.fill")
+        MobileModule(id: "chat", title: "Chat", symbol: "message.fill"),
+        MobileModule(id: "project-estimator", title: "Project Estimator", symbol: "sum")
 ]
 
 struct ContentView: View {
@@ -79,7 +79,7 @@ struct ContentView: View {
     }
 
     private var drawerMenu: some View {
-        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label(item.title, systemImage: item.symbol) } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Done") { showMenu = false } } } }
+        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label(item.title, systemImage: item.symbol) } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .navigationBarTrailing) { Button("Done") { showMenu = false } } } }
     }
 
     private func module(_ id: String) -> MobileModule { appModules.first(where: { $0.id == id }) ?? appModules.first ?? MobileModule(id: "index", title: "Home", symbol: "house.fill") }
