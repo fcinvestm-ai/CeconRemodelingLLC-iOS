@@ -5,8 +5,8 @@ struct MobileModule: Identifiable, Hashable { let id: String; let title: String;
 
 private let appName = "Cecon Remodeling LLC"
 private let baseURL = "https://ceconremodelingllc.com"
-private let templateName = "floating-dock"
-private let navigationStyle = "floating"
+private let templateName = "icon-dashboard"
+private let navigationStyle = "dashboard"
 private let homeModule = "store"
 private let themeHex = "#234da9"
 private let appModules: [MobileModule] = [

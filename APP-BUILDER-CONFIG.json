@@ -1,5 +1,5 @@
 {
-  "mobileAppTemplate": "floating-dock",
+  "mobileAppTemplate": "icon-dashboard",
   "mobileHomeApp": "store",
   "mobileNavStyle": "auto",
   "mobileModules": [
@@ -44,7 +44,6 @@
   "appleBundleResourceId": "W3648P4QZM",
   "appleXcodeProductId": "11085265-15A5-42F5-9074-8CABA640A778",
   "appleXcodeWorkflowId": "2CA27945-E060-4373-A446-D5E23736AF8F",
-  "appleBuildRunId": "94928f2e-68d4-40a8-a7f4-ca9434315631",
   "appleContentProviderConfirmed": true,
   "applePublishingRoute": "fc",
   "appleShortDescription": "",
@@ -61,7 +60,7 @@
   "appleReviewEmail": "",
   "appleReviewPhone": "",
   "appleReviewNotes": "",
-  "googleSubmissionStatus": "submitted",
+  "googleSubmissionStatus": "building",
   "generatedPlatform": "native-ios-xcode",
   "xcodeProductName": "CeconRemodelingLLC"
 }
