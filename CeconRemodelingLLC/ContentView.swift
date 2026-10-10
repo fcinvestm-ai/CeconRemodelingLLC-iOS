@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 
-struct MobileModule: Identifiable, Hashable { let id: String; let title: String; let symbol: String }
+struct MobileModule: Identifiable, Hashable { let id: String; let title: String; let asset: String }
 
 private let appName = "Cecon Remodeling LLC"
 private let baseURL = "https://ceconremodelingllc.com"
@@ -10,10 +10,10 @@ private let navigationStyle = "bottom"
 private let homeModule = "store"
 private let themeHex = "#234da9"
 private let appModules: [MobileModule] = [
-        MobileModule(id: "store", title: "Store", symbol: "bag.fill"),
-        MobileModule(id: "room-designer", title: "Room Designer", symbol: "square.3.layers.3d"),
-        MobileModule(id: "chat", title: "Chat", symbol: "message.fill"),
-        MobileModule(id: "project-estimator", title: "Project Estimator", symbol: "sum")
+        MobileModule(id: "store", title: "Store", asset: "MwbIcon_store"),
+        MobileModule(id: "room-designer", title: "Room Designer", asset: "MwbIcon_layout"),
+        MobileModule(id: "chat", title: "Chat", asset: "MwbIcon_chat"),
+        MobileModule(id: "project-estimator", title: "Project Estimator", asset: "MwbIcon_calculator")
 ]
 
 struct ContentView: View {
@@ -33,15 +33,15 @@ struct ContentView: View {
 
     private var appContent: some View {
         VStack(spacing: 0) {
-            HStack {
-                Text(appName).font(.headline).lineLimit(1)
-                Spacer()
-                if navigationStyle == "drawer" {
-                    Button { showMenu = true } label: { Image(systemName: "line.3.horizontal").font(.title2) }
-                }
-            }.padding(.horizontal, 16).frame(height: 52).background(.background).overlay(alignment: .bottom) { Divider() }
             WebContainer(urlString: pageURL(selected)).id(selected)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             if ["bottom","floating"].contains(navigationStyle) { bottomNavigation }
+        }
+        .overlay(alignment: .topTrailing) {
+            if navigationStyle == "drawer" {
+                Button { showMenu = true } label: { Image(systemName: "line.3.horizontal").font(.title2).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }
+                    .padding(.top, 8).padding(.trailing, 10)
+            }
         }
         .sheet(isPresented: $showMenu) { drawerMenu }
     }
@@ -52,7 +52,7 @@ struct ContentView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(appModules) { item in
                         Button { selected = item.id; showMenu = true } label: {
-                            VStack(spacing: 12) { Image(systemName: item.symbol).font(.system(size: 28)); Text(item.title).font(.subheadline).fontWeight(.semibold).multilineTextAlignment(.center) }
+                            VStack(spacing: 12) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 30, height: 30); Text(item.title).font(.subheadline).fontWeight(.semibold).multilineTextAlignment(.center) }
                                 .frame(maxWidth: .infinity, minHeight: (templateName == "feature-home" && item.id == homeModule) ? 145 : 110)
                                 .background(item.id == homeModule && templateName == "feature-home" ? Color(hex: themeHex) : Color(.secondarySystemBackground))
                                 .foregroundStyle(item.id == homeModule && templateName == "feature-home" ? Color.white : Color.primary)
@@ -63,7 +63,10 @@ struct ContentView: View {
             }
             .navigationTitle(appName)
             .fullScreenCover(isPresented: $showMenu) {
-                VStack(spacing: 0) { HStack { Button("Done") { showMenu = false }; Spacer(); Text(module(selected).title).fontWeight(.semibold); Spacer(); Color.clear.frame(width: 44) }.padding(); Divider(); WebContainer(urlString: pageURL(selected)) }
+                ZStack(alignment: .topTrailing) {
+                    WebContainer(urlString: pageURL(selected)).ignoresSafeArea(.container, edges: .bottom)
+                    Button { showMenu = false } label: { Image(systemName: "xmark").font(.headline).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }.padding(.top, 8).padding(.trailing, 10)
+                }
             }
             .safeAreaInset(edge: .bottom) { if navigationStyle == "dashboard-bottom" { bottomNavigation } }
         }
@@ -72,20 +75,20 @@ struct ContentView: View {
     private var bottomNavigation: some View {
         HStack {
             ForEach(Array(appModules.prefix(5))) { item in
-                Button { selected = item.id } label: { VStack(spacing: 3) { Image(systemName: item.symbol); Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.caption2).lineLimit(1) }.frame(maxWidth: .infinity) }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : .secondary)
+                Button { selected = item.id } label: { VStack(spacing: 3) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22, height: 22); Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.caption2).lineLimit(1) }.frame(maxWidth: .infinity) }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : .secondary)
             }
         }.padding(.top, 7).padding(.horizontal, navigationStyle == "floating" ? 10 : 2).padding(.bottom, 4).background(.ultraThinMaterial).clipShape(RoundedRectangle(cornerRadius: navigationStyle == "floating" ? 20 : 0))
           .padding(.horizontal, navigationStyle == "floating" ? 12 : 0).padding(.bottom, navigationStyle == "floating" ? 8 : 0)
     }
 
     private var drawerMenu: some View {
-        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label(item.title, systemImage: item.symbol) } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .navigationBarTrailing) { Button("Done") { showMenu = false } } } }
+        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label { Text(item.title) } icon: { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22, height: 22) } } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .navigationBarTrailing) { Button("Done") { showMenu = false } } } }
     }
 
-    private func module(_ id: String) -> MobileModule { appModules.first(where: { $0.id == id }) ?? appModules.first ?? MobileModule(id: "index", title: "Home", symbol: "house.fill") }
+    private func module(_ id: String) -> MobileModule { appModules.first(where: { $0.id == id }) ?? appModules.first ?? MobileModule(id: "index", title: "Home", asset: "MwbIcon_home") }
     private func pageURL(_ id: String) -> String {
         guard var parts = URLComponents(string: baseURL) else { return baseURL }
-        var q = parts.queryItems ?? []; q.removeAll { $0.name == "page" }; if id != "index" { q.append(URLQueryItem(name: "page", value: id)) }; parts.queryItems = q.isEmpty ? nil : q; return parts.url?.absoluteString ?? baseURL
+        var q = parts.queryItems ?? []; q.removeAll { $0.name == "page" || $0.name == "mwbApp" }; q.append(URLQueryItem(name: "mwbApp", value: "1")); if id != "index" { q.append(URLQueryItem(name: "page", value: id)) }; parts.queryItems = q; return parts.url?.absoluteString ?? baseURL
     }
 }
 
