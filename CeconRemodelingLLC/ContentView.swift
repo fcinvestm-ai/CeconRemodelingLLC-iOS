@@ -9,9 +9,9 @@ private let templateName = "icon-dashboard"
 private let navigationStyle = "dashboard"
 private let homeModule = "store"
 private let themeHex = "#234da9"
-private let iconScale = 2
-private let fontScale = 2
-private let cardRadius = 18
+private let iconScale: CGFloat = 2
+private let fontScale: CGFloat = 2
+private let cardRadius: CGFloat = 18.0
 private let appModules: [MobileModule] = [
         MobileModule(id: "store", title: "Store", asset: "MwbIcon_store"),
         MobileModule(id: "room-designer", title: "Room Designer", asset: "MwbIcon_layout"),
@@ -60,7 +60,7 @@ struct ContentView: View {
                     ForEach(appModules) { item in
                         Button { selected = item.id; showMenu = true } label: {
                             VStack(spacing: 12) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 30 * iconScale, height: 30 * iconScale); Text(item.title).font(.system(size: 15 * fontScale)).fontWeight(.semibold).multilineTextAlignment(.center) }
-                                .frame(maxWidth: .infinity, minHeight: (templateName == "feature-home" && item.id == homeModule) ? 145 : 110)
+                                .frame(maxWidth: .infinity, minHeight: 110)
                                 .background(item.id == homeModule && templateName == "feature-home" ? Color(hex: themeHex) : Color(.secondarySystemBackground))
                                 .foregroundStyle(item.id == homeModule && templateName == "feature-home" ? Color.white : Color.primary)
                                 .clipShape(RoundedRectangle(cornerRadius: cardRadius))
@@ -80,12 +80,28 @@ struct ContentView: View {
     }
 
     private var bottomNavigation: some View {
-        HStack {
+        let isFloating = navigationStyle == "floating"
+        let innerHorizontal: CGFloat = isFloating ? 10 : 2
+        let outerHorizontal: CGFloat = isFloating ? 12 : 0
+        let outerBottom: CGFloat = isFloating ? 8 : 0
+        let navRadius: CGFloat = isFloating ? 20 : 0
+        return HStack {
             ForEach(Array(appModules.prefix(5))) { item in
-                Button { selected = item.id } label: { VStack(spacing: 3) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22 * iconScale, height: 22 * iconScale); Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.system(size: 10 * fontScale)).lineLimit(1) }.frame(maxWidth: .infinity) }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : .secondary)
+                Button { selected = item.id } label: {
+                    VStack(spacing: 3) {
+                        Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22 * iconScale, height: 22 * iconScale)
+                        Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.system(size: 10 * fontScale)).lineLimit(1)
+                    }.frame(maxWidth: .infinity)
+                }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : Color.secondary)
             }
-        }.padding(.top, 7).padding(.horizontal, navigationStyle == "floating" ? 10 : 2).padding(.bottom, 4).background(.ultraThinMaterial).clipShape(RoundedRectangle(cornerRadius: navigationStyle == "floating" ? 20 : 0))
-          .padding(.horizontal, navigationStyle == "floating" ? 12 : 0).padding(.bottom, navigationStyle == "floating" ? 8 : 0)
+        }
+        .padding(.top, 7)
+        .padding(.horizontal, innerHorizontal)
+        .padding(.bottom, 4)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: navRadius))
+        .padding(.horizontal, outerHorizontal)
+        .padding(.bottom, outerBottom)
     }
 
     private var drawerMenu: some View {
