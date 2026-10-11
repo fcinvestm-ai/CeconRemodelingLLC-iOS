@@ -5,10 +5,13 @@ struct MobileModule: Identifiable, Hashable { let id: String; let title: String;
 
 private let appName = "Cecon Remodeling LLC"
 private let baseURL = "https://ceconremodelingllc.com"
-private let templateName = "bottom-nav"
-private let navigationStyle = "bottom"
+private let templateName = "icon-dashboard"
+private let navigationStyle = "dashboard"
 private let homeModule = "store"
 private let themeHex = "#234da9"
+private let iconScale = 2
+private let fontScale = 2
+private let cardRadius = 18
 private let appModules: [MobileModule] = [
         MobileModule(id: "store", title: "Store", asset: "MwbIcon_store"),
         MobileModule(id: "room-designer", title: "Room Designer", asset: "MwbIcon_layout"),
@@ -37,6 +40,10 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             if ["bottom","floating"].contains(navigationStyle) { bottomNavigation }
         }
+        .overlay(alignment: .topLeading) {
+            Button { selected = homeModule } label: { Image(systemName: "chevron.left").font(.headline).padding(12).background(.ultraThinMaterial).clipShape(Circle()) }
+                .padding(.top, 8).padding(.leading, 10)
+        }
         .overlay(alignment: .topTrailing) {
             if navigationStyle == "drawer" {
                 Button { showMenu = true } label: { Image(systemName: "line.3.horizontal").font(.title2).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }
@@ -52,11 +59,11 @@ struct ContentView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(appModules) { item in
                         Button { selected = item.id; showMenu = true } label: {
-                            VStack(spacing: 12) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 30, height: 30); Text(item.title).font(.subheadline).fontWeight(.semibold).multilineTextAlignment(.center) }
+                            VStack(spacing: 12) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 30 * iconScale, height: 30 * iconScale); Text(item.title).font(.system(size: 15 * fontScale)).fontWeight(.semibold).multilineTextAlignment(.center) }
                                 .frame(maxWidth: .infinity, minHeight: (templateName == "feature-home" && item.id == homeModule) ? 145 : 110)
                                 .background(item.id == homeModule && templateName == "feature-home" ? Color(hex: themeHex) : Color(.secondarySystemBackground))
                                 .foregroundStyle(item.id == homeModule && templateName == "feature-home" ? Color.white : Color.primary)
-                                .clipShape(RoundedRectangle(cornerRadius: 18))
+                                .clipShape(RoundedRectangle(cornerRadius: cardRadius))
                         }
                     }
                 }.padding()
@@ -65,7 +72,7 @@ struct ContentView: View {
             .fullScreenCover(isPresented: $showMenu) {
                 ZStack(alignment: .topTrailing) {
                     WebContainer(urlString: pageURL(selected)).ignoresSafeArea(.container, edges: .bottom)
-                    Button { showMenu = false } label: { Image(systemName: "xmark").font(.headline).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }.padding(.top, 8).padding(.trailing, 10)
+                    Button { showMenu = false } label: { Image(systemName: "chevron.left").font(.headline).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }.padding(.top, 8).padding(.trailing, 10)
                 }
             }
             .safeAreaInset(edge: .bottom) { if navigationStyle == "dashboard-bottom" { bottomNavigation } }
@@ -75,7 +82,7 @@ struct ContentView: View {
     private var bottomNavigation: some View {
         HStack {
             ForEach(Array(appModules.prefix(5))) { item in
-                Button { selected = item.id } label: { VStack(spacing: 3) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22, height: 22); Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.caption2).lineLimit(1) }.frame(maxWidth: .infinity) }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : .secondary)
+                Button { selected = item.id } label: { VStack(spacing: 3) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22 * iconScale, height: 22 * iconScale); Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.system(size: 10 * fontScale)).lineLimit(1) }.frame(maxWidth: .infinity) }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : .secondary)
             }
         }.padding(.top, 7).padding(.horizontal, navigationStyle == "floating" ? 10 : 2).padding(.bottom, 4).background(.ultraThinMaterial).clipShape(RoundedRectangle(cornerRadius: navigationStyle == "floating" ? 20 : 0))
           .padding(.horizontal, navigationStyle == "floating" ? 12 : 0).padding(.bottom, navigationStyle == "floating" ? 8 : 0)

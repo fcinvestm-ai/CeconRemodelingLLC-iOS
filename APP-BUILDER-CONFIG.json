@@ -1,5 +1,9 @@
 {
-  "mobileAppTemplate": "bottom-nav",
+  "mobileAppTemplate": "icon-dashboard",
+  "mobileIconScale": 200,
+  "mobileFontScale": 200,
+  "mobileCornerRadius": 18,
+  "mobileDockOpacity": 96,
   "mobileHomeApp": "store",
   "mobileNavStyle": "auto",
   "mobileModules": [
