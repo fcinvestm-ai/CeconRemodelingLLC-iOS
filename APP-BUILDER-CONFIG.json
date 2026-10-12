@@ -1,39 +1,82 @@
 {
-  "mobileAppTemplate": "feature-home",
-  "mobileBackgroundMode": "color",
+  "mobileTemplateElements": {
+    "minimal-luxury": []
+  },
+  "mobileTemplateTexts": {
+    "feature-home": {
+      "action": "",
+      "title": "Everything you need.",
+      "body": "Fast access to your most important services.",
+      "secondary": "",
+      "eyebrow": "",
+      "header": "Cecon Remodeling LLC"
+    },
+    "minimal-luxury": {
+      "header": "PROFESSIONALISM • QUALITY",
+      "title": "Cecon Remodeling LLC",
+      "body": "Thoughtful kitchen, bathroom, and interior remodeling designed to make your home more beautiful, functional, and distinctly yours.",
+      "eyebrow": "",
+      "action": "Book Appointment →",
+      "secondary": "",
+      "actionTarget": "appointments"
+    },
+    "dynamic-smart": {
+      "header": "Cecon Remodeling LLC",
+      "body": "",
+      "title": "Cecon Remodeling LLC",
+      "secondary": "",
+      "action": "＋ Choose Your Apps",
+      "eyebrow": ""
+    }
+  },
+  "mobileTemplateBackgrounds": {
+    "dynamic-smart": {
+      "image": "",
+      "mode": "color",
+      "color": "#ffffff"
+    },
+    "feature-home": {
+      "color": "#000000",
+      "mode": "image",
+      "image": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791823751539-a7395e40-2054-4147-8314-728e940a8063.jpg?alt=media&token=d7d05df6-53ea-4992-9f5e-f2e3b51f8b31"
+    },
+    "minimal-luxury": {
+      "mode": "image",
+      "color": "#ffffff",
+      "image": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791826417799-ceconappbackground.png?alt=media&token=db598547-fae1-42b9-afb9-d551ab942871"
+    }
+  },
+  "mobileAppTemplate": "minimal-luxury",
+  "mobileBackgroundMode": "image",
   "mobileShowHamburger": false,
-  "mobileShowBottomNav": false,
+  "mobileShowBottomNav": true,
   "mobileShowHomeIcons": true,
   "mobileBottomModules": [
     "store",
-    "room-designer",
     "appointments",
     "chat",
     "project-estimator"
   ],
   "mobileHomeIconModules": [
     "store",
-    "room-designer",
     "appointments",
     "chat",
-    "project-estimator",
-    "newsletter"
+    "project-estimator"
   ],
   "mobileTemplateFont": "serif",
-  "mobileTemplateBackground": "#000000",
+  "mobileTemplateBackground": "#ffffff",
   "mobileNavBackground": "#000000",
   "mobileTemplateTextColor": "#0a0a0a",
   "mobileCardBackground": "#f4f4f6",
-  "mobileTemplateBackgroundImage": "",
-  "mobileIconScale": 197,
+  "mobileTemplateBackgroundImage": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791826417799-ceconappbackground.png?alt=media&token=db598547-fae1-42b9-afb9-d551ab942871",
+  "mobileIconScale": 195,
   "mobileFontScale": 200,
   "mobileCornerRadius": 18,
   "mobileDockOpacity": 96,
-  "mobileHomeApp": "room-designer",
+  "mobileHomeApp": "store",
   "mobileNavStyle": "auto",
   "mobileModules": [
     "store",
-    "room-designer",
     "appointments",
     "chat",
     "project-estimator",
