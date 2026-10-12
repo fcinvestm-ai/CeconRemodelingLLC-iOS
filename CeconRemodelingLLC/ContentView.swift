@@ -1,128 +1,21 @@
 import SwiftUI
 import WebKit
+import Foundation
 
-struct MobileModule: Identifiable, Hashable { let id: String; let title: String; let asset: String }
-
-private let appName = "Cecon Remodeling LLC"
-private let baseURL = "https://ceconremodelingllc.com"
-private let templateName = "feature-home"
-private let navigationStyle = "dashboard"
-private let homeModule = "room-designer"
-private let themeHex = "#1c5be3"
-private let iconScale: CGFloat = 1.97
-private let fontScale: CGFloat = 2
-private let cardRadius: CGFloat = 18.0
-private let appModules: [MobileModule] = [
-        MobileModule(id: "store", title: "Store", asset: "MwbIcon_store"),
-        MobileModule(id: "room-designer", title: "Room Designer", asset: "MwbIcon_layout"),
-        MobileModule(id: "appointments", title: "Appointments", asset: "MwbIcon_clock"),
-        MobileModule(id: "chat", title: "Chat", asset: "MwbIcon_chat"),
-        MobileModule(id: "project-estimator", title: "Project Estimator", asset: "MwbIcon_calculator"),
-        MobileModule(id: "newsletter", title: "Newsletter", asset: "MwbIcon_mail")
-]
+private let generatedAppHTMLBase64 = "PCFkb2N0eXBlIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0idXRmLTgiPjxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsaW5pdGlhbC1zY2FsZT0xLHZpZXdwb3J0LWZpdD1jb3Zlcix1c2VyLXNjYWxhYmxlPW5vIj48c3R5bGU+Kntib3gtc2l6aW5nOmJvcmRlci1ib3h9aHRtbCxib2R5e21hcmdpbjowO3dpZHRoOjEwMCU7aGVpZ2h0OjEwMCU7b3ZlcmZsb3c6aGlkZGVufS5td2JQdntwb3NpdGlvbjpyZWxhdGl2ZTt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO292ZXJmbG93OmhpZGRlbjtmb250LWZhbWlseTotYXBwbGUtc3lzdGVtLEJsaW5rTWFjU3lzdGVtRm9udCwiU2Vnb2UgVUkiLHNhbnMtc2VyaWY7Y29sb3I6IzExMTtiYWNrZ3JvdW5kOiNmZmZ9Ci5td2JQdiBzdmd7d2lkdGg6MjVweDtoZWlnaHQ6MjVweDtzdHJva2Utd2lkdGg6Mn0ucHZUb3AsLnB2U3BvdEhlYWR7ZGlzcGxheTpmbGV4O2p1c3RpZnktY29udGVudDpzcGFjZS1iZXR3ZWVuO2FsaWduLWl0ZW1zOmNlbnRlcjtwYWRkaW5nOjE4cHh9LnB2VG9wIGIsLnB2U3BvdEhlYWQgYntmb250LXNpemU6MTRweH0ucHZJdGVte2Rpc3BsYXk6ZmxleDtmbGV4LWRpcmVjdGlvbjpjb2x1bW47YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7Z2FwOjdweDt0ZXh0LWFsaWduOmNlbnRlcjtmb250LXNpemU6MTBweDtmb250LXdlaWdodDo4MDB9Ci5wdkRvY2tJdGVte2Rpc3BsYXk6ZmxleDtmbGV4LWRpcmVjdGlvbjpjb2x1bW47YWxpZ24taXRlbXM6Y2VudGVyO2dhcDozcHg7Zm9udC1zaXplOjdweDtmb250LXdlaWdodDo4MDB9LnB2RG9ja0l0ZW0gc3Zne3dpZHRoOjE4cHg7aGVpZ2h0OjE4cHh9LnB2V2hpdGVEb2NrLC5wdkJsdWVEb2NrLC5wdkZsb2F0RG9ja3twb3NpdGlvbjphYnNvbHV0ZTtsZWZ0OjEycHg7cmlnaHQ6MTJweDtib3R0b206MTJweDtoZWlnaHQ6NThweDtib3JkZXItcmFkaXVzOjIwcHg7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtqdXN0aWZ5LWNvbnRlbnQ6c3BhY2UtYXJvdW5kO3otaW5kZXg6NX0ucHZXaGl0ZURvY2t7YmFja2dyb3VuZDojZmZmZmZmZjA7Ym94LXNoYWRvdzowIDhweCAyNHB4ICMwMDAyfS5wdkJsdWVEb2Nre2JhY2tncm91bmQ6IzBiNjZlNDtjb2xvcjojZmZmfS5wdkZsb2F0RG9ja3tiYWNrZ3JvdW5kOiNmZmZmZmZkOTtiYWNrZHJvcC1maWx0ZXI6Ymx1cigxNXB4KTtjb2xvcjojMTc0NDVjfQoucHZNb2Rlcm57aGVpZ2h0OjEwMCU7YmFja2dyb3VuZDojZjdmOWZjfS5wdk1vZGVybkhlcm97bWFyZ2luOjAgMTVweCAxMnB4O3BhZGRpbmc6MjRweCAxOHB4O2JvcmRlci1yYWRpdXM6MjBweDtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxNDVkZWcsIzExMTgyNywjMjY3OGZmKTtjb2xvcjojZmZmfS5wdk1vZGVybkhlcm8gaDJ7Zm9udC1zaXplOjI2cHg7bWFyZ2luOjVweCAwfS5wdk1vZGVybkNhcmRze2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDIsMWZyKTtnYXA6MTBweDtwYWRkaW5nOjRweCAxNXB4IDgwcHh9LnB2TW9kZXJuQ2FyZHMgLnB2SXRlbXtoZWlnaHQ6OTRweDtiYWNrZ3JvdW5kOiNmZmY7Ym9yZGVyLXJhZGl1czoxNnB4O2JveC1zaGFkb3c6MCA3cHggMjBweCAjMDAwMTtjb2xvcjojMTExfS5wdk1vZGVybkNhcmRzIC5wdkl0ZW0gc3Zne2NvbG9yOiMyNjc4ZmZ9Ci5wdkRhcmtEYXNoe2hlaWdodDoxMDAlO3BhZGRpbmctYm90dG9tOjE4cHg7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoMTQ1ZGVnLCMwZjE3MmEsIzMzNDE1NSk7Y29sb3I6I2ZmZn0ucHZEYXJrRGFzaCBoMntwYWRkaW5nOjAgMThweH0ucHZCaWdHcmlke2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDIsMWZyKTtnYXA6MTNweDtwYWRkaW5nOjEwcHggMTZweH0ucHZCaWdHcmlkIC5wdkl0ZW17aGVpZ2h0OjEzMHB4O2JvcmRlci1yYWRpdXM6MjBweDtiYWNrZ3JvdW5kOiNmZmZmZmYxMjtib3JkZXI6MXB4IHNvbGlkICNmZmZmZmYyNX0ucHZCaWdHcmlkIHN2Z3tjb2xvcjojNjBhNWZhO3dpZHRoOjM4cHg7aGVpZ2h0OjM4cHh9Ci5wdkhlcm8ub2NlYW57cG9zaXRpb246YWJzb2x1dGU7aW5zZXQ6MDtwYWRkaW5nOjM1cHggMjBweCA5MHB4O2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZywjMDU3YThjNTUsIzA2Mzk0YWNjKSxyYWRpYWwtZ3JhZGllbnQoY2lyY2xlIGF0IDcwJSAyMCUsIzc3ZDdkMSwjMGI3NTg3IDQ1JSwjMDgzYzUwIDc1JSk7Y29sb3I6I2ZmZn0ucHZCcmFuZHtmb250LXNpemU6MTFweDtsZXR0ZXItc3BhY2luZzoycHh9LnB2SGVybyBoMntmb250LWZhbWlseTpHZW9yZ2lhLHNlcmlmO2ZvbnQtc2l6ZTozNnB4O2xpbmUtaGVpZ2h0OjEuMDU7bWFyZ2luOjcwcHggMCAxMHB4fS5wdkhlcm8gcHtmb250LXNpemU6MTJweH0ucHZHbGFzc1Jvd3twb3NpdGlvbjphYnNvbHV0ZTtsZWZ0OjE2cHg7cmlnaHQ6MTZweDtib3R0b206OTBweDtkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLDFmcik7Z2FwOjhweH0ucHZHbGFzc1JvdyAucHZJdGVte2hlaWdodDo3NHB4O2JvcmRlci1yYWRpdXM6MTZweDtiYWNrZ3JvdW5kOiNmZmZmZmYyNjtiYWNrZHJvcC1maWx0ZXI6Ymx1cigxMHB4KX0ucHZHbGFzc1JvdyAucHZJdGVtOm50aC1jaGlsZChuKzQpe2Rpc3BsYXk6bm9uZX0KLnB2UGFnZURpbXtoZWlnaHQ6MTAwJTtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxNDVkZWcsIzI3MzY0ZCwjMTAxODI3KX0ucHZEcmF3ZXJ7aGVpZ2h0OjEwMCU7d2lkdGg6NzglO3BhZGRpbmc6MThweDtiYWNrZ3JvdW5kOiNmZmY7Ym94LXNoYWRvdzoxMnB4IDAgMzVweCAjMDAwNX0ucHZEcmF3ZXJIZWFke2Rpc3BsYXk6ZmxleDtqdXN0aWZ5LWNvbnRlbnQ6c3BhY2UtYmV0d2VlbjthbGlnbi1pdGVtczpjZW50ZXI7cGFkZGluZzo1cHggNHB4IDIwcHh9LnB2RHJhd2VySGVhZCBpe2ZvbnQtc2l6ZToyNXB4fS5wdkRyYXdlclJvd3toZWlnaHQ6NDdweDtkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2dhcDoxMnB4O3BhZGRpbmc6MCAxMnB4O2JvcmRlci1yYWRpdXM6MTJweDtmb250LXNpemU6MTFweDtmb250LXdlaWdodDo4MDB9LnB2RHJhd2VyUm93IHN2Z3t3aWR0aDoyMHB4fS5wdkRyYXdlclJvdy5hY3RpdmV7YmFja2dyb3VuZDojZmZmMGU4O2NvbG9yOiNkNzViMTZ9Ci5wdlNwb3R7aGVpZ2h0OjEwMCU7cGFkZGluZy1ib3R0b206MjBweDtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxODBkZWcsIzE3MTEyNCwjMDkwNzBkKTtjb2xvcjojZmZmfS5wdlNwb3Q+aDJ7Zm9udC1zaXplOjI2cHg7bWFyZ2luOjIwcHggMThweCA0cHh9LnB2U3BvdD5we21hcmdpbjowIDE4cHggMThweDtjb2xvcjojYWFhO2ZvbnQtc2l6ZToxMXB4fS5wdkVxdWFsR3JpZHtkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgyLDFmcik7Z2FwOjEycHg7cGFkZGluZzowIDE2cHh9LnB2RXF1YWxHcmlkIC5wdkl0ZW17aGVpZ2h0OjExMnB4O2JvcmRlci1yYWRpdXM6MThweDtiYWNrZ3JvdW5kOiMxMTE7Ym9yZGVyOjFweCBzb2xpZCAjMjY3OGZmfS5wdkVxdWFsR3JpZCBzdmd7Y29sb3I6IzI2NzhmZjt3aWR0aDozMnB4O2hlaWdodDozMnB4fQoucHZTb2NpYWx7aGVpZ2h0OjEwMCU7YmFja2dyb3VuZDojZjRmN2ZifS5wdlN0b3JpZXN7ZGlzcGxheTpmbGV4O2dhcDo5cHg7cGFkZGluZzowIDE1cHggMTNweH0ucHZTdG9yaWVzIGl7ZGlzcGxheTpncmlkO3BsYWNlLWl0ZW1zOmNlbnRlcjt3aWR0aDo0NXB4O2hlaWdodDo0NXB4O2JvcmRlci1yYWRpdXM6NTAlO2JhY2tncm91bmQ6I2ZmZjtib3JkZXI6MnB4IHNvbGlkICMyNjc4ZmZ9LnB2U3RvcmllcyBzdmd7d2lkdGg6MjBweH0ucHZQb3N0e21hcmdpbjowIDE0cHg7cGFkZGluZzoxNHB4O2JhY2tncm91bmQ6I2ZmZjtib3JkZXItcmFkaXVzOjE2cHg7Zm9udC1zaXplOjExcHh9LnB2UG9zdCBwe2NvbG9yOiM2NjcwODV9LnB2UG9zdFBpY3toZWlnaHQ6MTUwcHg7Ym9yZGVyLXJhZGl1czoxMnB4O2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE0NWRlZywjYjhkOGZmLCM1MjZkOTEpfQoucHZDb21tZXJjZXtoZWlnaHQ6MTAwJTtiYWNrZ3JvdW5kOiNmZmZ9LnB2U2VhcmNoe21hcmdpbjowIDE0cHg7cGFkZGluZzoxMHB4IDEzcHg7Ym9yZGVyLXJhZGl1czoxMnB4O2JhY2tncm91bmQ6I2YxZjNmNTtjb2xvcjojOTk5O2ZvbnQtc2l6ZToxMHB4fS5wdlByb21ve21hcmdpbjoxMnB4IDE0cHg7cGFkZGluZzoxOHB4O2JvcmRlci1yYWRpdXM6MTZweDtiYWNrZ3JvdW5kOiNmNGQ3Yzc7ZGlzcGxheTpmbGV4O2p1c3RpZnktY29udGVudDpzcGFjZS1iZXR3ZWVufS5wdkNvbW1lcmNlIGgze2ZvbnQtc2l6ZToxNHB4O21hcmdpbjoxNXB4fS5wdlByb2R1Y3Rze2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6MWZyIDFmcjtnYXA6MTBweDtwYWRkaW5nOjAgMTRweH0ucHZQcm9kdWN0cyBpe2hlaWdodDoxNDVweDtib3JkZXItcmFkaXVzOjE0cHg7YmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoI2U5ZWNlZiwjY2JkNWUxKX0KLnB2U2VydmljZXtoZWlnaHQ6MTAwJTtiYWNrZ3JvdW5kOiNmNWY3ZmF9LnB2U2VydmljZUhlcm97aGVpZ2h0OjE4MHB4O3BhZGRpbmc6MThweDtiYWNrZ3JvdW5kOmxpbmVhci1ncmFkaWVudCgxNDVkZWcsIzE3MjAzMywjMzM0MTU1KTtjb2xvcjojZmZmfS5wdlNlcnZpY2VIZXJvIGgye2ZvbnQtc2l6ZToyNXB4fS5wdlNlcnZpY2VIZXJvIHNwYW57ZGlzcGxheTppbmxpbmUtYmxvY2s7cGFkZGluZzo4cHggMTFweDtib3JkZXItcmFkaXVzOjlweDtiYWNrZ3JvdW5kOiMyNjc4ZmY7Zm9udC1zaXplOjlweH0ucHZTZXJ2aWNlR3JpZHttYXJnaW46LTI0cHggMTNweCAwO3BhZGRpbmc6MTNweDtkaXNwbGF5OmdyaWQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOnJlcGVhdCgzLDFmcik7Z2FwOjhweDtib3JkZXItcmFkaXVzOjE4cHg7YmFja2dyb3VuZDojZmZmO2JveC1zaGFkb3c6MCAxMHB4IDMwcHggIzAwMDJ9LnB2U2VydmljZUdyaWQgLnB2SXRlbXtoZWlnaHQ6NzVweH0ucHZTZXJ2aWNlR3JpZCBzdmd7Y29sb3I6IzI2NzhmZn0KLnB2THV4dXJ5e2hlaWdodDoxMDAlO3BhZGRpbmc6NzBweCAyMHB4O2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KCMwMDAzLCMwMDAzKSxsaW5lYXItZ3JhZGllbnQoMTQ1ZGVnLCNhOTk3ODQsI2U3ZGRkMCk7Y29sb3I6I2ZmZjt0ZXh0LWFsaWduOmNlbnRlcn0ucHZMdXh1cnk+c21hbGx7bGV0dGVyLXNwYWNpbmc6MnB4fS5wdkx1eHVyeSBoMntmb250OjMycHggR2VvcmdpYSxzZXJpZjttYXJnaW46NjBweCAwIDEwcHh9LnB2THV4dXJ5IHB7Zm9udC1zaXplOjExcHh9LnB2THV4dXJ5IGJ1dHRvbnttYXJnaW4tdG9wOjEycHg7Ym9yZGVyOjA7Ym9yZGVyLXJhZGl1czoyMHB4O2JhY2tncm91bmQ6IzExMTtjb2xvcjojZmZmO3BhZGRpbmc6MTFweCAxN3B4fQoucHZTbWFydHtoZWlnaHQ6MTAwJTtwYWRkaW5nLWJvdHRvbToxNXB4O2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE1MGRlZywjMDgxYjNhLCMxNjRlOGEpO2NvbG9yOiNmZmZ9LnB2U21hcnQgaDJ7cGFkZGluZzowIDE4cHh9LnB2U21hcnRHcmlke2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDIsMWZyKTtnYXA6MTNweDtwYWRkaW5nOjEwcHggMTdweH0ucHZTbWFydEdyaWQgLnB2SXRlbXtoZWlnaHQ6MTEycHg7Ym9yZGVyLXJhZGl1czoyMnB4O2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE0NWRlZywjMDZiNmQ0YWEsIzNiODJmNmFhKTtib3JkZXI6MXB4IHNvbGlkICNmZmZmZmYzNX0ucHZTbWFydEdyaWQgc3Zne3dpZHRoOjM0cHg7aGVpZ2h0OjM0cHh9LnB2Q2hvb3Nle21hcmdpbjoxNHB4IDE3cHg7cGFkZGluZzoxM3B4O2JvcmRlcjoxcHggZGFzaGVkICNmZmY4O2JvcmRlci1yYWRpdXM6MTVweDt0ZXh0LWFsaWduOmNlbnRlcjtmb250LXNpemU6MTFweH0KLnB2Q2h1cmNoe2hlaWdodDoxMDAlO2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE4MGRlZywjZWFmNGZmLCNmZmYpfS5wdkNodXJjaEhlcm97aGVpZ2h0OjE2NXB4O3BhZGRpbmc6MzBweCAxNXB4O3RleHQtYWxpZ246Y2VudGVyO2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KDE0NWRlZywjMGIzMTU0LCMyNjc4ZmYpO2NvbG9yOiNmZmZ9LnB2Q2h1cmNoSGVybz5ie2ZvbnQtc2l6ZTozOHB4fS5wdkNodXJjaEhlcm8gaDJ7bWFyZ2luOjVweCAwfS5wdkNodXJjaEhlcm8gcHttYXJnaW46MDtmb250LXNpemU6MTFweH0ucHZDaHVyY2hHcmlke2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDMsMWZyKTtnYXA6OXB4O3BhZGRpbmc6MTRweH0ucHZDaHVyY2hHcmlkIC5wdkl0ZW17aGVpZ2h0Ojg2cHg7Ym9yZGVyLXJhZGl1czoxNXB4O2JhY2tncm91bmQ6I2ZmZjtib3gtc2hhZG93OjAgNnB4IDE4cHggIzAwMDF9LnB2Q2h1cmNoR3JpZCBzdmd7Y29sb3I6IzE0NzdkNH0ucHZFdmVudHttYXJnaW46MCAxNHB4O3BhZGRpbmc6MTNweDtib3JkZXItcmFkaXVzOjE0cHg7YmFja2dyb3VuZDojMGIzMTU0O2NvbG9yOiNmZmZ9LnB2RXZlbnQgc21hbGwsLnB2RXZlbnQgYntkaXNwbGF5OmJsb2NrO2ZvbnQtc2l6ZTo5cHh9Ci5hcHBMYXllcntwb3NpdGlvbjphYnNvbHV0ZTt6LWluZGV4OjEwMDtpbnNldDowO2JhY2tncm91bmQ6I2ZmZn0uYXBwTGF5ZXIgaWZyYW1le3dpZHRoOjEwMCU7aGVpZ2h0OjEwMCU7Ym9yZGVyOjB9LmFwcEJhY2t7cG9zaXRpb246YWJzb2x1dGU7ei1pbmRleDoxMDE7bGVmdDoxMHB4O3RvcDoxMHB4O3dpZHRoOjQycHg7aGVpZ2h0OjQycHg7Ym9yZGVyOjA7Ym9yZGVyLXJhZGl1czo1MCU7YmFja2dyb3VuZDojMTExZDtjb2xvcjojZmZmO2ZvbnQtc2l6ZToyNnB4fTwvc3R5bGU+PC9oZWFkPjxib2R5PjxkaXYgY2xhc3M9Im13YlB2IG13YlB2LWZlYXR1cmUtaG9tZSIgZGF0YS1zaG93LWJvdHRvbT0iMCIgZGF0YS1zaG93LWhhbWJ1cmdlcj0iMCIgZGF0YS1mb250PSJzZXJpZiIgZGF0YS1iYWNrZ3JvdW5kLW1vZGU9ImNvbG9yIiBzdHlsZT0iLS1wdi1iZzogIzAwMDAwMDsgLS1wdi1uYXY6ICMwMDAwMDA7IC0tcHYtdGV4dDogIzBhMGEwYTsgLS1wdi1jYXJkOiAjZjRmNGY2OyAtLXB2LWFjY2VudDogIzFjNWJlMzsgYmFja2dyb3VuZC1pbWFnZTogbm9uZTsiPjxkaXYgY2xhc3M9InB2U3BvdCI+PGRpdiBjbGFzcz0icHZTcG90SGVhZCI+PGI+Q2Vjb24gUmVtb2RlbGluZyBMTEM8L2I+PHNwYW4+4pePPC9zcGFuPjwvZGl2PjxoMj5FdmVyeXRoaW5nIHlvdSBuZWVkLjwvaDI+PHA+RmFzdCBhY2Nlc3MgdG8geW91ciBtb3N0IGltcG9ydGFudCBzZXJ2aWNlcy48L3A+PGRpdiBjbGFzcz0icHZFcXVhbEdyaWQiPjxidXR0b24gdHlwZT0iYnV0dG9uIiBjbGFzcz0icHZJdGVtICIgZGF0YS1hcHA9InN0b3JlIj48c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMi4xNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTQgMTB2MTBoMTZWMTBNMyA0aDE4bC0yIDZINXoiPjwvcGF0aD48cGF0aCBkPSJNOSAxNGg2djZIOXoiPjwvcGF0aD48L3N2Zz48c3Bhbj5TdG9yZTwvc3Bhbj48L2J1dHRvbj48YnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3M9InB2SXRlbSBhY3RpdmUiIGRhdGEtYXBwPSJyb29tLWRlc2lnbmVyIj48c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMi4xNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHJlY3QgeD0iMyIgeT0iMyIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiByeD0iMiI+PC9yZWN0PjxwYXRoIGQ9Ik0zIDloMThNOSAyMVY5Ij48L3BhdGg+PC9zdmc+PHNwYW4+Um9vbSBEZXNpZ25lcjwvc3Bhbj48L2J1dHRvbj48YnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3M9InB2SXRlbSAiIGRhdGEtYXBwPSJhcHBvaW50bWVudHMiPjxzdmcgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyLjE1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGFyaWEtaGlkZGVuPSJ0cnVlIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI5Ij48L2NpcmNsZT48cGF0aCBkPSJNMTIgN3Y1bDMgMiI+PC9wYXRoPjwvc3ZnPjxzcGFuPkFwcG9pbnRtZW50czwvc3Bhbj48L2J1dHRvbj48YnV0dG9uIHR5cGU9ImJ1dHRvbiIgY2xhc3M9InB2SXRlbSAiIGRhdGEtYXBwPSJjaGF0Ij48c3ZnIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMi4xNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTIxIDE1YTQgNCAwIDAgMS00IDRIOGwtNSAzVjdhNCA0IDAgMCAxIDQtNGgxMGE0IDQgMCAwIDEgNCA0eiI+PC9wYXRoPjwvc3ZnPjxzcGFuPkNoYXQ8L3NwYW4+PC9idXR0b24+PGJ1dHRvbiB0eXBlPSJidXR0b24iIGNsYXNzPSJwdkl0ZW0gIiBkYXRhLWFwcD0icHJvamVjdC1lc3RpbWF0b3IiPjxzdmcgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyLjE1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGFyaWEtaGlkZGVuPSJ0cnVlIj48cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMjAiIHJ4PSIyIj48L3JlY3Q+PHBhdGggZD0iTTggNmg4TTggMTFoMm00IDBoMk04IDE1aDJtNCAwaDJNOCAxOWgybTQgMGgyIj48L3BhdGg+PC9zdmc+PHNwYW4+UHJvamVjdCBFc3RpbWF0b3I8L3NwYW4+PC9idXR0b24+PGJ1dHRvbiB0eXBlPSJidXR0b24iIGNsYXNzPSJwdkl0ZW0gIiBkYXRhLWFwcD0ibmV3c2xldHRlciI+PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2Utd2lkdGg9IjIuMTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgYXJpYS1oaWRkZW49InRydWUiPjxyZWN0IHg9IjMiIHk9IjUiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxNCIgcng9IjIiPjwvcmVjdD48cGF0aCBkPSJtMyA3IDkgNiA5LTYiPjwvcGF0aD48L3N2Zz48c3Bhbj5OZXdzbGV0dGVyPC9zcGFuPjwvYnV0dG9uPjwvZGl2PjwvZGl2PjwvZGl2PjxzY3JpcHQ+Y29uc3QgQz17ImJhc2UiOiJodHRwczovL2NlY29ucmVtb2RlbGluZ2xsYy5jb20iLCJob21lIjoicm9vbS1kZXNpZ25lciJ9O2NvbnN0IHNoZWxsPWRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy5td2JQdicpO2Z1bmN0aW9uIHBhZ2VVcmwoaWQpe3RyeXtjb25zdCB1PW5ldyBVUkwoQy5iYXNlKTt1LnNlYXJjaFBhcmFtcy5zZXQoJ213YkFwcCcsJzEnKTtpZihpZD09PSdpbmRleCcpdS5zZWFyY2hQYXJhbXMuZGVsZXRlKCdwYWdlJyk7ZWxzZSB1LnNlYXJjaFBhcmFtcy5zZXQoJ3BhZ2UnLGlkKTtyZXR1cm4gdS50b1N0cmluZygpfWNhdGNoKGUpe3JldHVybiBDLmJhc2V9fWZ1bmN0aW9uIG9wZW5BcHAoaWQpe2NvbnN0IGxheWVyPWRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO2xheWVyLmNsYXNzTmFtZT0nYXBwTGF5ZXInO2NvbnN0IGY9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnaWZyYW1lJyk7Zi5zcmM9cGFnZVVybChpZCk7Y29uc3QgYj1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdidXR0b24nKTtiLmNsYXNzTmFtZT0nYXBwQmFjayc7Yi50ZXh0Q29udGVudD0n4oC5JztiLm9uY2xpY2s9KCk9PmxheWVyLnJlbW92ZSgpO2xheWVyLmFwcGVuZChmLGIpO3NoZWxsLmFwcGVuZENoaWxkKGxheWVyKX1kb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCdbZGF0YS1hcHBdJykuZm9yRWFjaChiPT5iLm9uY2xpY2s9KCk9Pm9wZW5BcHAoYi5kYXRhc2V0LmFwcCkpOzwvc2NyaXB0PjwvYm9keT48L2h0bWw+"
 
 struct ContentView: View {
-    @State private var selected = homeModule
-    @State private var showMenu = false
-
-    var body: some View {
-        Group {
-            if templateName == "icon-dashboard" || templateName == "dashboard-nav" || navigationStyle == "dashboard" || navigationStyle == "dashboard-bottom" {
-                dashboard
-            } else {
-                appContent
-            }
-        }
-        .tint(Color(hex: themeHex))
-    }
-
-    private var appContent: some View {
-        VStack(spacing: 0) {
-            WebContainer(urlString: pageURL(selected)).id(selected)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            if ["bottom","floating"].contains(navigationStyle) { bottomNavigation }
-        }
-        .overlay(alignment: .topLeading) {
-            Button { selected = homeModule } label: { Image(systemName: "chevron.left").font(.headline).padding(12).background(.ultraThinMaterial).clipShape(Circle()) }
-                .padding(.top, 8).padding(.leading, 10)
-        }
-        .overlay(alignment: .topTrailing) {
-            if navigationStyle == "drawer" {
-                Button { showMenu = true } label: { Image(systemName: "line.3.horizontal").font(.title2).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }
-                    .padding(.top, 8).padding(.trailing, 10)
-            }
-        }
-        .sheet(isPresented: $showMenu) { drawerMenu }
-    }
-
-    private var dashboard: some View {
-        NavigationView {
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                    ForEach(appModules) { item in
-                        Button { selected = item.id; showMenu = true } label: {
-                            VStack(spacing: 12) { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 30 * iconScale, height: 30 * iconScale); Text(item.title).font(.system(size: 15 * fontScale)).fontWeight(.semibold).multilineTextAlignment(.center) }
-                                .frame(maxWidth: .infinity, minHeight: 110)
-                                .background(item.id == homeModule && templateName == "feature-home" ? Color(hex: themeHex) : Color(.secondarySystemBackground))
-                                .foregroundStyle(item.id == homeModule && templateName == "feature-home" ? Color.white : Color.primary)
-                                .clipShape(RoundedRectangle(cornerRadius: cardRadius))
-                        }
-                    }
-                }.padding()
-            }
-            .navigationTitle(appName)
-            .fullScreenCover(isPresented: $showMenu) {
-                ZStack(alignment: .topTrailing) {
-                    WebContainer(urlString: pageURL(selected)).ignoresSafeArea(.container, edges: .bottom)
-                    Button { showMenu = false } label: { Image(systemName: "chevron.left").font(.headline).padding(10).background(.ultraThinMaterial).clipShape(Circle()) }.padding(.top, 8).padding(.trailing, 10)
-                }
-            }
-            .safeAreaInset(edge: .bottom) { if navigationStyle == "dashboard-bottom" { bottomNavigation } }
-        }
-    }
-
-    private var bottomNavigation: some View {
-        let isFloating = navigationStyle == "floating"
-        let innerHorizontal: CGFloat = isFloating ? 10 : 2
-        let outerHorizontal: CGFloat = isFloating ? 12 : 0
-        let outerBottom: CGFloat = isFloating ? 8 : 0
-        let navRadius: CGFloat = isFloating ? 20 : 0
-        return HStack {
-            ForEach(Array(appModules.prefix(5))) { item in
-                Button { selected = item.id } label: {
-                    VStack(spacing: 3) {
-                        Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22 * iconScale, height: 22 * iconScale)
-                        Text(item.title.replacingOccurrences(of: "Project ", with: "")).font(.system(size: 10 * fontScale)).lineLimit(1)
-                    }.frame(maxWidth: .infinity)
-                }.foregroundStyle(selected == item.id ? Color(hex: themeHex) : Color.secondary)
-            }
-        }
-        .padding(.top, 7)
-        .padding(.horizontal, innerHorizontal)
-        .padding(.bottom, 4)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: navRadius))
-        .padding(.horizontal, outerHorizontal)
-        .padding(.bottom, outerBottom)
-    }
-
-    private var drawerMenu: some View {
-        NavigationView { List(appModules) { item in Button { selected = item.id; showMenu = false } label: { Label { Text(item.title) } icon: { Image(item.asset).renderingMode(.template).resizable().scaledToFit().frame(width: 22, height: 22) } } }.navigationTitle(appName).toolbar { ToolbarItem(placement: .navigationBarTrailing) { Button("Done") { showMenu = false } } } }
-    }
-
-    private func module(_ id: String) -> MobileModule { appModules.first(where: { $0.id == id }) ?? appModules.first ?? MobileModule(id: "index", title: "Home", asset: "MwbIcon_home") }
-    private func pageURL(_ id: String) -> String {
-        guard var parts = URLComponents(string: baseURL) else { return baseURL }
-        var q = parts.queryItems ?? []; q.removeAll { $0.name == "page" || $0.name == "mwbApp" }; q.append(URLQueryItem(name: "mwbApp", value: "1")); if id != "index" { q.append(URLQueryItem(name: "page", value: id)) }; parts.queryItems = q; return parts.url?.absoluteString ?? baseURL
-    }
+    var body: some View { ExactPreviewWebView().ignoresSafeArea() }
 }
-
-struct WebContainer: UIViewRepresentable {
-    let urlString: String
-    func makeCoordinator() -> Coordinator { Coordinator() }
-    func makeUIView(context: Context) -> WKWebView { let c = WKWebViewConfiguration(); c.allowsInlineMediaPlayback = true; c.mediaTypesRequiringUserActionForPlayback = []; let w = WKWebView(frame: .zero, configuration: c); w.navigationDelegate = context.coordinator; w.uiDelegate = context.coordinator; w.allowsBackForwardNavigationGestures = true; if let u=URL(string:urlString){w.load(URLRequest(url:u))}; return w }
+struct ExactPreviewWebView: UIViewRepresentable {
+    func makeUIView(context: Context) -> WKWebView {
+        let c = WKWebViewConfiguration()
+        c.allowsInlineMediaPlayback = true
+        c.mediaTypesRequiringUserActionForPlayback = []
+        let w = WKWebView(frame: .zero, configuration: c)
+        w.allowsBackForwardNavigationGestures = true
+        if let d = Data(base64Encoded: generatedAppHTMLBase64), let h = String(data: d, encoding: .utf8) { w.loadHTMLString(h, baseURL: nil) }
+        return w
+    }
     func updateUIView(_ webView: WKWebView, context: Context) {}
-    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate { func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? { if navigationAction.targetFrame == nil, let u=navigationAction.request.url { webView.load(URLRequest(url:u)) }; return nil } }
 }
-
-extension Color { init(hex: String) { var s=hex.trimmingCharacters(in:.whitespacesAndNewlines); if s.hasPrefix("#"){s.removeFirst()}; var n:UInt64=0; Scanner(string:s).scanHexInt64(&n); self.init(.sRGB, red:Double((n>>16)&255)/255, green:Double((n>>8)&255)/255, blue:Double(n&255)/255, opacity:1) } }
