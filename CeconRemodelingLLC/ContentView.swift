@@ -5,18 +5,20 @@ struct MobileModule: Identifiable, Hashable { let id: String; let title: String;
 
 private let appName = "Cecon Remodeling LLC"
 private let baseURL = "https://ceconremodelingllc.com"
-private let templateName = "icon-dashboard"
+private let templateName = "feature-home"
 private let navigationStyle = "dashboard"
-private let homeModule = "store"
-private let themeHex = "#234da9"
-private let iconScale: CGFloat = 2
+private let homeModule = "room-designer"
+private let themeHex = "#1c5be3"
+private let iconScale: CGFloat = 1.97
 private let fontScale: CGFloat = 2
 private let cardRadius: CGFloat = 18.0
 private let appModules: [MobileModule] = [
         MobileModule(id: "store", title: "Store", asset: "MwbIcon_store"),
         MobileModule(id: "room-designer", title: "Room Designer", asset: "MwbIcon_layout"),
+        MobileModule(id: "appointments", title: "Appointments", asset: "MwbIcon_clock"),
         MobileModule(id: "chat", title: "Chat", asset: "MwbIcon_chat"),
-        MobileModule(id: "project-estimator", title: "Project Estimator", asset: "MwbIcon_calculator")
+        MobileModule(id: "project-estimator", title: "Project Estimator", asset: "MwbIcon_calculator"),
+        MobileModule(id: "newsletter", title: "Newsletter", asset: "MwbIcon_mail")
 ]
 
 struct ContentView: View {
