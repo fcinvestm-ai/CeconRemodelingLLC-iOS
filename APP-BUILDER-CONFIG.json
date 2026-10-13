@@ -3,22 +3,6 @@
     "minimal-luxury": []
   },
   "mobileTemplateTexts": {
-    "feature-home": {
-      "header": "Cecon Remodeling LLC",
-      "title": "Everything you need.",
-      "action": "",
-      "body": "Fast access to your most important services.",
-      "eyebrow": "",
-      "secondary": ""
-    },
-    "dynamic-smart": {
-      "title": "Cecon Remodeling LLC",
-      "action": "＋ Choose Your Apps",
-      "body": "",
-      "header": "Cecon Remodeling LLC",
-      "eyebrow": "",
-      "secondary": ""
-    },
     "minimal-luxury": {
       "header": "PROFESSIONALISM • QUALITY",
       "title": "Cecon Remodeling LLC",
@@ -27,6 +11,22 @@
       "action": "Book Appointment →",
       "secondary": "",
       "actionTarget": "appointments"
+    },
+    "feature-home": {
+      "title": "Everything you need.",
+      "header": "Cecon Remodeling LLC",
+      "body": "Fast access to your most important services.",
+      "secondary": "",
+      "action": "",
+      "eyebrow": ""
+    },
+    "dynamic-smart": {
+      "header": "Cecon Remodeling LLC",
+      "eyebrow": "",
+      "body": "",
+      "action": "＋ Choose Your Apps",
+      "secondary": "",
+      "title": "Cecon Remodeling LLC"
     }
   },
   "mobileTemplateBackgrounds": {
@@ -35,15 +35,15 @@
       "color": "#ffffff",
       "image": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791826417799-ceconappbackground.png?alt=media&token=db598547-fae1-42b9-afb9-d551ab942871"
     },
-    "feature-home": {
-      "image": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791823751539-a7395e40-2054-4147-8314-728e940a8063.jpg?alt=media&token=d7d05df6-53ea-4992-9f5e-f2e3b51f8b31",
-      "color": "#000000",
-      "mode": "image"
-    },
     "dynamic-smart": {
+      "mode": "color",
       "image": "",
-      "color": "#ffffff",
-      "mode": "color"
+      "color": "#ffffff"
+    },
+    "feature-home": {
+      "mode": "image",
+      "image": "https://firebasestorage.googleapis.com/v0/b/websitebuilder-productio-4f0af.firebasestorage.app/o/projects%2FqX34yVpHomVie5UXg88l%2Fapp-builder%2Fbackgrounds%2F1791823751539-a7395e40-2054-4147-8314-728e940a8063.jpg?alt=media&token=d7d05df6-53ea-4992-9f5e-f2e3b51f8b31",
+      "color": "#000000"
     }
   },
   "mobileAppTemplate": "minimal-luxury",
