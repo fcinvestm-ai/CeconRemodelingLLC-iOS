@@ -9,6 +9,7 @@
 		A10000000000000000000001 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* App.swift */; };
 		A10000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ContentView.swift */; };
 		A10000000000000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
+		A10000000000000000000004 /* AppHome.html in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* AppHome.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,6 +18,7 @@
 		A20000000000000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000000000000000000005 /* CeconRemodelingLLC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CeconRemodelingLLC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000006 /* AppHome.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = AppHome.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,7 +27,7 @@
 
 /* Begin PBXGroup section */
 		A40000000000000000000001 = {isa = PBXGroup; children = (A40000000000000000000002 /* CeconRemodelingLLC */, A40000000000000000000003 /* Products */); sourceTree = "<group>"; };
-		A40000000000000000000002 /* CeconRemodelingLLC */ = {isa = PBXGroup; children = (A20000000000000000000001 /* App.swift */, A20000000000000000000002 /* ContentView.swift */, A20000000000000000000003 /* Assets.xcassets */, A20000000000000000000004 /* Info.plist */); path = CeconRemodelingLLC; sourceTree = "<group>"; };
+		A40000000000000000000002 /* CeconRemodelingLLC */ = {isa = PBXGroup; children = (A20000000000000000000001 /* App.swift */, A20000000000000000000002 /* ContentView.swift */, A20000000000000000000003 /* Assets.xcassets */, A20000000000000000000004 /* Info.plist */, A20000000000000000000006 /* AppHome.html */); path = CeconRemodelingLLC; sourceTree = "<group>"; };
 		A40000000000000000000003 /* Products */ = {isa = PBXGroup; children = (A20000000000000000000005 /* CeconRemodelingLLC.app */); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
@@ -38,7 +40,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A70000000000000000000001 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000003 /* Assets.xcassets in Resources */); runOnlyForDeploymentPostprocessing = 0; };
+		A70000000000000000000001 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000003 /* Assets.xcassets in Resources */, A10000000000000000000004 /* AppHome.html in Resources */); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
