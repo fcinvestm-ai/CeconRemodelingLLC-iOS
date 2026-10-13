@@ -3,63 +3,27 @@ import WebKit
 import Foundation
 
 struct ContentView: View {
-    var body: some View {
-        ExactPreviewWebView()
-            .ignoresSafeArea()
-            .background(Color.black)
-    }
+    var body: some View { AppBuilderWebView().ignoresSafeArea() }
 }
 
-struct ExactPreviewWebView: UIViewRepresentable {
-    final class Coordinator: NSObject, WKNavigationDelegate {
-        let fallbackURLString: String
-        private var usedFallback = false
-
-        init(fallbackURLString: String) {
-            self.fallbackURLString = fallbackURLString
-        }
-
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            loadFallback(webView)
-        }
-
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            loadFallback(webView)
-        }
-
-        private func loadFallback(_ webView: WKWebView) {
-            guard !usedFallback,
-                  let url = URL(string: fallbackURLString),
-                  ["https", "http"].contains(url.scheme?.lowercased() ?? "") else { return }
-            usedFallback = true
-            webView.load(URLRequest(url: url))
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(fallbackURLString: "https://ceconremodelingllc.com")
-    }
-
+struct AppBuilderWebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
-        let config = WKWebViewConfiguration()
-        config.allowsInlineMediaPlayback = true
-        config.mediaTypesRequiringUserActionForPlayback = []
-        let webView = WKWebView(frame: .zero, configuration: config)
-        webView.navigationDelegate = context.coordinator
+        let configuration = WKWebViewConfiguration()
+        configuration.allowsInlineMediaPlayback = true
+        let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.isOpaque = false
-        webView.backgroundColor = UIColor.black
-        webView.scrollView.backgroundColor = UIColor.black
-        webView.allowsBackForwardNavigationGestures = true
+        webView.backgroundColor = UIColor.white
+        webView.scrollView.backgroundColor = UIColor.white
+        webView.allowsBackForwardNavigationGestures = false
+        if #available(iOS 16.4, *) { webView.isInspectable = true }
 
-        if let appHomeURL = Bundle.main.url(forResource: "AppHome", withExtension: "html") {
-            webView.loadFileURL(appHomeURL, allowingReadAccessTo: Bundle.main.bundleURL)
-        } else if let fallbackURL = URL(string: "https://ceconremodelingllc.com") {
-            webView.load(URLRequest(url: fallbackURL))
+        if let home = Bundle.main.url(forResource: "AppHome", withExtension: "html") {
+            webView.loadFileURL(home, allowingReadAccessTo: Bundle.main.bundleURL)
         } else {
-            webView.loadHTMLString("<!doctype html><html><body style='margin:0;background:#111827;color:white;font-family:-apple-system;padding:32px'><h2>App content could not be loaded.</h2></body></html>", baseURL: nil)
+            let diagnostic = "<!doctype html><meta name='viewport' content='width=device-width,initial-scale=1'><body style='font-family:-apple-system;padding:30px;background:white;color:#111'><h2>AppHome.html is missing from this build.</h2><p>Generate a new iOS project from App Builder.</p></body>"
+            webView.loadHTMLString(diagnostic, baseURL: nil)
         }
         return webView
     }
-
     func updateUIView(_ webView: WKWebView, context: Context) {}
 }
