@@ -4572,10 +4572,10 @@ body .builder-toolbar .toolbar-more-menu .toolbar-menu-item { text-align: left; 
  .pvFreeElement{position:absolute}
  .appLayer{position:fixed;inset:0;z-index:2147483000;background:#fff}
  .appLayer iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
- .mwbPv{width:375px!important;height:812px!important;min-height:812px!important;transform-origin:top left!important;transform:scale(var(--mwb-device-scale,1))!important}
+ .mwbPv{width:375px!important;min-height:812px!important;transform-origin:top left!important;transform:scale(var(--mwb-device-scale,1))!important;background-size:cover!important;background-position:center center!important}
  .mwb-native-app-page header,.mwb-native-app-page nav,.mwb-native-app-page .top-nav,.mwb-native-app-page .topnav,.mwb-native-app-page .top-navigation,.mwb-native-app-page .site-header,.mwb-native-app-page .site-nav,.mwb-native-app-page .navbar,.mwb-native-app-page .navigation,.mwb-native-app-page .main-navigation,.mwb-native-app-page #topNav,.mwb-native-app-page #topNavigation,.mwb-native-app-page #siteHeader,.mwb-native-app-page #siteNav,.mwb-native-app-page #navbar,.mwb-native-app-page #navigation{display:none!important}
  
- .mwb-published-app-shell{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;margin:0!important;padding:0!important;overflow:hidden!important}
+ .mwb-published-app-shell{display:block!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;min-width:100vw!important;min-height:100vh!important;margin:0!important;padding:0!important;overflow:hidden!important;background:#fff!important}
  #appView.mwb-published-app-shell .mwbPv{display:block!important;visibility:visible!important;opacity:1!important;width:100vw!important;height:100vh!important}
  html,body{margin:0!important;width:100%!important;height:100%!important;overflow:hidden!important;background:#000!important}
  body{display:flex!important;align-items:stretch!important;justify-content:center!important;min-height:100vh!important}
@@ -4587,8 +4587,18 @@ body .builder-toolbar .toolbar-more-menu .toolbar-menu-item { text-align: left; 
  <script>
  (function(){
    function mwbFitExactLivePreview(){
-     var scale=Math.min(window.innerWidth/375,window.innerHeight/812);
+     var vw=Math.max(document.documentElement.clientWidth||0,window.innerWidth||0);
+     var vh=Math.max(document.documentElement.clientHeight||0,window.innerHeight||0);
+     var scale=vw/375;
      document.documentElement.style.setProperty("--mwb-device-scale",String(scale||1));
+     document.documentElement.style.setProperty("--mwb-device-width",vw+"px");
+     document.documentElement.style.setProperty("--mwb-device-height",vh+"px");
+     var root=document.querySelector(".mwbPv");
+     if(root){
+       root.style.setProperty("width","375px","important");
+       root.style.setProperty("height",Math.max(812,vh/(scale||1))+"px","important");
+       root.style.setProperty("min-height",Math.max(812,vh/(scale||1))+"px","important");
+     }
    }
    mwbFitExactLivePreview();
    window.addEventListener("resize",mwbFitExactLivePreview);
